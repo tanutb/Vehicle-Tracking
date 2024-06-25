@@ -88,7 +88,7 @@ class Vehicle:
         self.vx = 0.0
         self.vy = 0.0
         self.ID = ID
-        self._max_age = 30
+        self._max_age = 15
         self.age = 0
         self.dt = 0
         self._class = _class
@@ -186,7 +186,7 @@ class Tracking:
     def tracking(self, frame) -> list:
         
         ### Start Detection ###
-        results = self.model(frame,verbose=False , conf=0.5)[0]
+        results = self.model(frame,verbose=False , conf=0.6)[0]
         if self.tracking_ob == {} :
             ### First detection
             if results.boxes is not None:

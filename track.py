@@ -3,7 +3,7 @@ from utils.SORT import Tracking
 
 if __name__ == "__main__":
     t = Tracking()
-    video_path = './test_video/test_vdo_full.mp4'
+    video_path = './test_video/27260-362770008_small.mp4'
     cap = cv2.VideoCapture(video_path)
 
     # Check if the video was opened successfully

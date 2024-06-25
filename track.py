@@ -1,5 +1,5 @@
 import cv2
-from utils.tracking_module import Tracking
+from utils.SORT import Tracking
 
 if __name__ == "__main__":
     t = Tracking()
@@ -17,6 +17,7 @@ if __name__ == "__main__":
         ret, frame = cap.read()
         
         test = t.tracking(frame)
+        # class_name = ['Car', 'Motorcycle', 'Truck', 'Bus', 'Bicycle']
         # If frame is read correctly, ret is True
         if not ret:
             print("Reached end of video or failed to read frame.")
@@ -37,15 +38,14 @@ if __name__ == "__main__":
             cls = test['cls'][i]
 
             cv2.rectangle(frame, (x_min, y_min), (x_max, y_max), (0, 0, 255), 2)
-            text_x, text_y = x_min, y_min - 10  # Offset the text above the bounding box
+            text_x, text_y = x_min, y_min - 20  # Offset the text above the bounding box
             font = cv2.FONT_HERSHEY_SIMPLEX
-            font_scale = 0.7
+            font_scale = 0.5
             color = (0, 255, 0)  # Green color
-            thickness = 3
+            thickness = 2
             cv2.putText(frame, "ID : " + str(ID), (text_x, text_y), font, font_scale, color, thickness)
-            # label = f"{model.names[int(cls)]} {conf:.2f}"  # Class label and confidence
-            # plt.gca().add_patch(plt.Rectangle((x1, y1), x2 - x1, y2 - y1, edgecolor='red', facecolor='none', linewidth=2))
-            # plt.text(x1, y1 - 5, label, color='red', fontsize=12, bbox=dict(facecolor='yellow', alpha=0.5))
+            cv2.putText(frame, str([int(cls)]), (text_x, text_y + 13)
+                        , font, font_scale, (255, 0, 0), thickness)
 
         # Display the frame
         cv2.imshow('Frame', frame)

@@ -5,10 +5,6 @@
 
 
 from ultralytics import YOLO
-import matplotlib.pyplot as plt
-import matplotlib.patches as patches
-import cv2
-import os
 from utils.hungarian import Hungarian
 from filterpy.kalman import KalmanFilter
 import numpy as np
@@ -78,7 +74,7 @@ class Vehicle:
         self.vx = 0.0
         self.vy = 0.0
         self.ID = ID
-        self._max_age = 20
+        self._max_age = 50
         self.age = 0
         self.dt = 0
         self._class = _class

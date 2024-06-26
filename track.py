@@ -20,7 +20,7 @@ if __name__ == "__main__":
         tracking return : -> XYWH 
         
         '''
-        test = t.detect(frame)
+        test = t.tracking(frame)
 
         height,width,ch = frame.shape
 

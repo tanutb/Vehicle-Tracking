@@ -14,16 +14,6 @@ from filterpy.kalman import KalmanFilter
 import numpy as np
 
 
-def linear_assignment(cost_matrix):
-  try:
-    import lap
-    _, x, y = lap.lapjv(cost_matrix, extend_cost=True)
-    return np.array([[y[i],i] for i in x if i >= 0]) #
-  except ImportError:
-    from scipy.optimize import linear_sum_assignment
-    x, y = linear_sum_assignment(cost_matrix)
-    return np.array(list(zip(x, y)))
-
 def calculate_iou(boxA, boxB):
     """
     Calculate the Intersection over Union (IoU) of two bounding boxes.
@@ -88,7 +78,7 @@ class Vehicle:
         self.vx = 0.0
         self.vy = 0.0
         self.ID = ID
-        self._max_age = 15
+        self._max_age = 20
         self.age = 0
         self.dt = 0
         self._class = _class
@@ -165,7 +155,7 @@ class Vehicle:
 
 class Tracking:
     def __init__(self) -> None:
-        self.model = YOLO('yolov8m')
+        self.model = YOLO('./weight/Detection_weight.pt')
         self.tracking_ob = {}
         self.ID = 0
         self.class_name = list(self.model.names)
@@ -186,7 +176,7 @@ class Tracking:
     def tracking(self, frame) -> list:
         
         ### Start Detection ###
-        results = self.model(frame,verbose=False , conf=0.6)[0]
+        results = self.model(frame,verbose=False , conf=0.5)[0]
         if self.tracking_ob == {} :
             ### First detection
             if results.boxes is not None:
@@ -250,9 +240,13 @@ class Tracking:
 
             ## New Track
             for i in unmatched_detections :
-                v = Vehicle(bb[i],self.ID,cls[i])
-                self.tracking_ob[self.ID] = v
-                self.ID +=1
+                
+                if np.any(IOU[i,:] > 0.0) : 
+                    pass
+                else : 
+                    v = Vehicle(bb[i],self.ID,cls[i])
+                    self.tracking_ob[self.ID] = v
+                    self.ID +=1
 
             ## Missing Track
             for i in unmatched_trackers :
@@ -280,7 +274,6 @@ class Tracking:
             ID_list.append(ID)
             conf_list.append(self.tracking_ob[ID].get_conf())
             cls_list.append(self.tracking_ob[ID].get_class())
-            # xywh_list.append(self.current_frame[ID].get_xywh())
             xywh_list.append(self.tracking_ob[ID].predict())
         re = {
                 'ID' : ID_list,
